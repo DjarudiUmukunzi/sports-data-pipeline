@@ -1,4 +1,4 @@
-# This single file creates all our Azure resources, based on the healthcare project structure
+# This single file creates all our Azure resources
 
 # 1. Resource Group
 resource "azurerm_resource_group" "rg" {
@@ -6,17 +6,11 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
-# 2. Random Suffix for Storage Account
-resource "random_string" "sa_suffix" {
-  length  = 6
-  special = false
-  upper   = false
-  numeric = true
-}
-
-# 3. ADLS Gen2 Storage Account
+# 2. ADLS Gen2 Storage Account
+# We use a fixed, unique name from our variables file
+# The 'random_string' resource has been removed
 resource "azurerm_storage_account" "adls" {
-  name                     = "${var.sa_prefix}${random_string.sa_suffix.result}"
+  name                     = var.storage_account_name
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
@@ -24,7 +18,7 @@ resource "azurerm_storage_account" "adls" {
   is_hns_enabled           = true # This enables ADLS Gen2
 }
 
-# 4. Storage Containers
+# 3. Storage Containers (Bronze, Silver, Gold)
 resource "azurerm_storage_container" "bronze" {
   name                  = "bronze"
   storage_account_name  = azurerm_storage_account.adls.name
@@ -43,6 +37,7 @@ resource "azurerm_storage_container" "gold" {
   container_access_type = "private"
 }
 
+# 4. Storage Container for Terraform State (for our CI/CD backend)
 resource "azurerm_storage_container" "tfstate" {
   name                  = "tfstate"
   storage_account_name  = azurerm_storage_account.adls.name
@@ -72,7 +67,7 @@ resource "azurerm_data_factory" "adf" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
 
-  # Create the Managed Identity (the fix from our last project)
+  # Create the Managed Identity
   identity {
     type = "SystemAssigned"
   }
@@ -112,3 +107,4 @@ resource "azurerm_key_vault_access_policy" "adf_to_kv" {
     azurerm_data_factory.adf
   ]
 }
+
