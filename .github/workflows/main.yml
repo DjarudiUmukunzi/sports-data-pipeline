@@ -17,6 +17,13 @@ jobs:
     name: 'Terraform'
     runs-on: ubuntu-latest
     
+    # --- THIS IS THE FIX ---
+    # Set a default working directory for all steps in this job
+    defaults:
+      run:
+        working-directory: ./terraform
+    # ---------------------
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -24,20 +31,24 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
+      # 'working-directory' is no longer needed here
       - name: Terraform Init
         run: terraform init
-        working-directory: ./terraform  # <-- ADDED THIS
 
+      # 'working-directory' is no longer needed here
       - name: Terraform Plan
         run: terraform plan -input=false
-        working-directory: ./terraform  # <-- ADDED THIS
 
+      # 'working-directory' is no longer needed here
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false
-        working-directory: ./terraform  # <-- ADDED THIS
 ```
 
-### What to Do
+### What's Changed:
+
+I've added the `defaults` block. This tells GitHub Actions to run **all** `run:` commands in this job inside the `./terraform` folder. This is much cleaner and removes the three `working-directory` lines that were causing the syntax error.
+
+### What to Do:
 
 1.  Open the `.github/workflows/main.yml` file on your local machine.
 2.  Replace its contents with the new code above.
@@ -45,6 +56,7 @@ jobs:
 
     ```bash
     git add .github/workflows/main.yml
-    git commit -m "Fix CI/CD working directory"
+    git commit -m "Fix CI/CD with default working-directory"
     git push origin main
     
+
