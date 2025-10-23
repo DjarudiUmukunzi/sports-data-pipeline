@@ -24,10 +24,10 @@ jobs:
     
     steps:
       - name: Checkout
-        uses: actions/checkout@v3 # <-- This was the fix (vV3 -> v3)
+        uses: actions/checkout@v3 
 
       - name: Setup Terraform
-        uses: hash_icorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v2 # <-- This was the fix (hash_icorp -> hashicorp)
 
       - name: Terraform Init
         run: terraform init
