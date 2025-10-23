@@ -12,15 +12,12 @@ variable "location" {
   default     = "East US"
 }
 
-# --- THIS VARIABLE IS NEW ---
-# We now use a fixed, globally unique name for the storage account
-# to enable the CI/CD backend.
-# The old 'sa_prefix' variable has been removed.
+
 variable "storage_account_name" {
   description = "Globally unique name for the ADLS Gen2 storage account."
   type        = string
   # --- !! CHANGE THIS VALUE !! ---
-  default     = "stsportsanalytics12345" # <-- MUST BE GLOBALLY UNIQUE
+  default     = "stsportsanalyticsnfcji2" 
 }
 
 variable "kv_name" {

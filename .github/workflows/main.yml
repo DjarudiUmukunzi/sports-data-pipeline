@@ -15,7 +15,7 @@ env:
 
   # --- CONFIGURATION TO MATCH YOUR variables.tf ---
   BACKEND_RESOURCE_GROUP_NAME: "rg-sports-analytics-dev"
-  BACKEND_STORAGE_ACCOUNT_NAME: "stsportsanalytics12345" 
+  BACKEND_STORAGE_ACCOUNT_NAME: "stsportsanalyticsnfcji2" 
   BACKEND_STORAGE_CONTAINER_NAME: "tfstate"
   BACKEND_KEY: "terraform.tfstate"
   # -----------------------------------------------
