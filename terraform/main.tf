@@ -6,9 +6,7 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
-# 2. ADLS Gen2 Storage Account
-# We use a fixed, unique name from our variables file
-# The 'random_string' resource has been removed
+
 resource "azurerm_storage_account" "adls" {
   name                     = var.storage_account_name
   resource_group_name      = azurerm_resource_group.rg.name
