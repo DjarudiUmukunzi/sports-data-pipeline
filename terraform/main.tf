@@ -43,6 +43,12 @@ resource "azurerm_storage_container" "gold" {
   container_access_type = "private"
 }
 
+resource "azurerm_storage_container" "tfstate" {
+  name                  = "tfstate"
+  storage_account_name  = azurerm_storage_account.adls.name
+  container_access_type = "private"
+}
+
 # 5. Azure Key Vault
 resource "azurerm_key_vault" "kv" {
   name                = var.kv_name

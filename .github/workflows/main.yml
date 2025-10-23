@@ -17,17 +17,17 @@ jobs:
     name: 'Terraform'
     runs-on: ubuntu-latest
     
-    # Set a default working directory for all 'run' steps in this job
+    # Sets the default working directory for all 'run' steps
     defaults:
       run:
         working-directory: ./terraform
     
     steps:
       - name: Checkout
-        uses: actions/checkout@v3 
+        uses: actions/checkout@v3
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2 # <-- This was the fix (hash_icorp -> hashicorp)
+        uses: hashicorp/setup-terraform@v2
 
       - name: Terraform Init
         run: terraform init
@@ -37,4 +37,3 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false
-
