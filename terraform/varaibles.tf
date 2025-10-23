@@ -1,4 +1,4 @@
-# Defines the default names for all resources, just like the healthcare project
+# Defines the default names for all resources
 
 variable "rg_name" {
   description = "Name of the Azure Resource Group"
@@ -12,10 +12,15 @@ variable "location" {
   default     = "East US"
 }
 
-variable "sa_prefix" {
-  description = "Prefix for the ADLS Gen2 storage account name. A random string will be appended."
+# --- THIS VARIABLE IS NEW ---
+# We now use a fixed, globally unique name for the storage account
+# to enable the CI/CD backend.
+# The old 'sa_prefix' variable has been removed.
+variable "storage_account_name" {
+  description = "Globally unique name for the ADLS Gen2 storage account."
   type        = string
-  default     = "stsportsanalytics"
+  # --- !! CHANGE THIS VALUE !! ---
+  default     = "stsportsanalytics12345" # <-- MUST BE GLOBALLY UNIQUE
 }
 
 variable "kv_name" {
@@ -35,3 +40,4 @@ variable "dbw_name" {
   type        = string
   default     = "dbw-sports-analytics-dev"
 }
+
