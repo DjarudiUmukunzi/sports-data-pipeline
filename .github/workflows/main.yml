@@ -53,17 +53,4 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false
-```
-
-### Your Next Step
-
-1.  Open your `.github/workflows/main.yml` file.
-2.  Replace its entire contents with the code above.
-3.  Commit and push the change:
-
-    ```bash
-    git add .github/workflows/main.yml
-    git commit -m "Fix CI/CD: Pass backend config to init"
-    git push origin main
-    
 
