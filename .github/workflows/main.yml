@@ -17,7 +17,6 @@ jobs:
     name: 'Terraform'
     runs-on: ubuntu-latest
     
-    # Sets the default working directory for all 'run' steps
     defaults:
       run:
         working-directory: ./terraform
@@ -30,7 +29,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -input=false  # <-- THIS IS THE FIX
 
       - name: Terraform Plan
         run: terraform plan -input=false
