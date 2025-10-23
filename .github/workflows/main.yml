@@ -7,25 +7,16 @@ on:
   workflow_dispatch:
 
 env:
-  # Azure Credentials from GitHub Secrets
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-
-  # --- CONFIGURATION TO MATCH YOUR variables.tf ---
-  BACKEND_RESOURCE_GROUP_NAME: "rg-sports-analytics-dev"
-  BACKEND_STORAGE_ACCOUNT_NAME: "stsportsanalytics12345" 
-  BACKEND_STORAGE_CONTAINER_NAME: "tfstate"
-  BACKEND_KEY: "terraform.tfstate"
-  # -----------------------------------------------
 
 jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
     
-    # Set a default working directory for all 'run' steps in this job
     defaults:
       run:
         working-directory: ./terraform
@@ -37,20 +28,38 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
-      # --- THIS IS THE FIX ---
-      # This command now passes all the backend info to 'init'
-      # It uses the 'env' variables defined above.
+      # This is a simple, stateless init
       - name: Terraform Init
-        run: |
-          terraform init -input=false \
-            -backend-config="resource_group_name=${{ env.BACKEND_RESOURCE_GROUP_NAME }}" \
-            -backend-config="storage_account_name=${{ env.BACKEND_STORAGE_ACCOUNT_NAME }}" \
-            -backend-config="container_name=${{ env.BACKEND_STORAGE_CONTAINER_NAME }}" \
-            -backend-config="key=${{ env.BACKEND_KEY }}"
+        run: terraform init -input=false
 
       - name: Terraform Plan
         run: terraform plan -input=false
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false
+```
 
+**3. Push These Changes**
+
+Commit and push both the file rename and the workflow change.
+
+```bash
+git add .
+git commit -m "TEMP: Stateless run to create backend resources"
+git push origin main
+```
+
+Now, go to the "Actions" tab on GitHub. **Wait for this pipeline to run and complete successfully.** It will build your resource group, your `stsportsanalytics12345` storage account, and all your other resources.
+
+---
+
+### Stage 2: Enable the Backend (Stateful Run)
+
+Now that the storage account *actually exists*, we can tell Terraform to use it.
+
+**1. Rename the Backend File Back**
+
+On your local machine, run this command to re-enable your `backend.tf` file:
+
+```bash
+git mv terraform/backend.tf.bak terraform/backend.tf
