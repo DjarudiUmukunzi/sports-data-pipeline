@@ -1,16 +1,11 @@
-# This is the name of your GitHub Actions workflow
 name: 'Terraform CI/CD'
 
-# This controls when the workflow will run
 on:
-  # Triggers the workflow on push events but only for the "main" branch
   push:
     branches:
       - main
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# These are the environment variables for Terraform
 env:
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
@@ -18,41 +13,22 @@ env:
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
 jobs:
-  # Define a job called "terraform"
   terraform:
     name: 'Terraform'
-    runs-on: ubuntu-latest # Run this job on a standard Linux runner
-
+    runs-on: ubuntu-latest
+    
     steps:
-      # Step 1: Check out your code from the repository
       - name: Checkout
         uses: actions/checkout@v3
 
-      # Step 2: Install the Terraform CLI
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
-      # Step 3: Run 'terraform init'
       - name: Terraform Init
         run: terraform init
 
-      # Step 4: Run 'terraform plan'
       - name: Terraform Plan
         run: terraform plan -input=false
 
-      # Step 5: Run 'terraform apply'
-      # The '-auto-approve' flag automatically says "yes" to the apply
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false
-```eof
-
----
-
-### Step 3: Push the Workflow File
-
-You're all set. Now, just commit and push your new file to GitHub:
-
-```bash
-git add .github/workflows/main.yml
-git commit -m "Add GitHub Actions CI/CD workflow"
-git push origin main
