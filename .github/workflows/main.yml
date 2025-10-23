@@ -26,9 +26,25 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+        working-directory: ./terraform  # <-- ADDED THIS
 
       - name: Terraform Plan
         run: terraform plan -input=false
+        working-directory: ./terraform  # <-- ADDED THIS
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false
+        working-directory: ./terraform  # <-- ADDED THIS
+```
+
+### What to Do
+
+1.  Open the `.github/workflows/main.yml` file on your local machine.
+2.  Replace its contents with the new code above.
+3.  Commit and push the change:
+
+    ```bash
+    git add .github/workflows/main.yml
+    git commit -m "Fix CI/CD working directory"
+    git push origin main
+    
