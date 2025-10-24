@@ -95,14 +95,71 @@ This phase processes the European Soccer Database using ADF and Databricks.
 ![ADF Pipeline Success](./images/adf-pipeline-success.png)
 *Replace with the path to your ADF pipeline screenshot*
 
-## 📊 Final Analytics (Example Gold Layer Visualization)
+## 📊 Gold Layer Analytics & Visualizations
 
-The `02_Silver_to_Gold` notebook includes examples of visualizing the generated KPIs.
+The `02_Silver_to_Gold` notebook creates comprehensive KPI tables and visualizations for business intelligence and sports analytics.
 
-### ⭐ Top 20 Players by Latest Overall Rating
+### 🏅 Top 20 Players by Overall Rating
 
-![Top 20 Players Visualization](./images/top-20-players.png)
-*Replace with the path to your visualization screenshot*
+Analysis of the highest-rated players based on their latest performance attributes.
+
+![Top 20 Players](./images/top-20-players.png)
+*Top 20 players ranked by overall rating*
+
+### 🏆 Team Performance Analysis
+
+#### Team Win Rates (Top 15)
+
+Comprehensive win rate analysis showing the most successful teams in European soccer.
+
+![Team Win Rates](./images/team-win-rates.png)
+*Top 15 teams by win rate percentage*
+
+#### Total Matches Played
+
+Match frequency analysis for the top-performing teams.
+
+![Total Matches](./images/total-matches-played.png)
+*Total matches played by top 15 teams*
+
+#### Win/Loss/Draw Distribution
+
+Detailed breakdown of match outcomes for the top 10 teams.
+
+![Win Loss Draw](./images/win-loss-draw-distribution.png)
+*Win, draw, and loss distribution for top 10 teams*
+
+### ⚽ League Statistics
+
+#### Total Goals by League
+
+Cross-league comparison of offensive productivity.
+
+![League Goals](./images/league-total-goals.png)
+*Total goals scored across different European leagues*
+
+#### Average Goals Per Match
+
+Metric showing the most competitive and high-scoring leagues.
+
+![Average Goals](./images/league-avg-goals.png)
+*Average goals per match by league*
+
+#### Home vs Away Performance
+
+Analysis of home field advantage across leagues.
+
+![Home vs Away](./images/home-vs-away-goals.png)
+*Comparison of home and away goal averages by league*
+
+### 🎯 Player Development Insights
+
+#### Potential vs Overall Rating
+
+Scatter plot showing the relationship between current performance and future potential.
+
+![Potential vs Rating](./images/potential-vs-rating.png)
+*Player potential vs overall rating for top 20 players*
 
 ## 🚀 How to Deploy and Run
 
