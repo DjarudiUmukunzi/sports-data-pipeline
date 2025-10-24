@@ -5,21 +5,21 @@ resource "azurerm_resource_group" "rg" {
   name     = var.rg_name
   location = var.location
 
-    lifecycle {
+  lifecycle {
     ignore_changes = all
   }
 }
 
-
+# 2. ADLS Gen2 Storage Account
 resource "azurerm_storage_account" "adls" {
   name                     = var.storage_account_name
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
-  is_hns_enabled           = true # This enables ADLS Gen2
+  is_hns_enabled           = true
 
-    lifecycle {
+  lifecycle {
     ignore_changes = all
   }
 }
@@ -30,7 +30,7 @@ resource "azurerm_storage_container" "bronze" {
   storage_account_name  = azurerm_storage_account.adls.name
   container_access_type = "private"
 
-    lifecycle {
+  lifecycle {
     ignore_changes = all
   }
 }
@@ -40,7 +40,7 @@ resource "azurerm_storage_container" "silver" {
   storage_account_name  = azurerm_storage_account.adls.name
   container_access_type = "private"
 
-    lifecycle {
+  lifecycle {
     ignore_changes = all
   }
 }
@@ -50,20 +50,18 @@ resource "azurerm_storage_container" "gold" {
   storage_account_name  = azurerm_storage_account.adls.name
   container_access_type = "private"
 
-
-    lifecycle {
+  lifecycle {
     ignore_changes = all
   }
 }
 
-# 4. Storage Container for Terraform State (for our CI/CD backend)
+# 4. Storage Container for Terraform State
 resource "azurerm_storage_container" "tfstate" {
   name                  = "tfstate"
   storage_account_name  = azurerm_storage_account.adls.name
   container_access_type = "private"
 
-
-    lifecycle {
+  lifecycle {
     ignore_changes = all
   }
 }
@@ -76,8 +74,7 @@ resource "azurerm_key_vault" "kv" {
   tenant_id           = data.azurerm_client_config.current.tenant_id
   sku_name            = "standard"
 
-
-    lifecycle {
+  lifecycle {
     ignore_changes = all
   }
 }
@@ -87,10 +84,9 @@ resource "azurerm_databricks_workspace" "dbw" {
   name                = var.dbw_name
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  sku                 = "standard" # Use 'standard' to save costs
+  sku                 = "standard"
 
-
-    lifecycle {
+  lifecycle {
     ignore_changes = all
   }
 }
@@ -101,53 +97,13 @@ resource "azurerm_data_factory" "adf" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
 
-  # Create the Managed Identity
   identity {
     type = "SystemAssigned"
   }
 
-    lifecycle {
+  lifecycle {
     ignore_changes = all
   }
 }
 
-# --- Data for Role Assignments ---
 data "azurerm_client_config" "current" {}
-
-# --- Role Assignments (The fixes from our last project) ---
-
-# 8. Grant ADF Access to Storage
-#resource "azurerm_role_assignment" "adf_to_adls" {
-#  scope                = azurerm_storage_account.adls.id
-#  role_definition_name = "Storage Blob Data Contributor"
-#  principal_id         = azurerm_data_factory.adf.identity[0].principal_id
-
-#  depends_on = [
-#    azurerm_data_factory.adf
-#  ]
-
-  lifecycle {
-    ignore_changes = all
-  }
-#}
-
-# 9. Grant ADF Access to Key Vault (to read/write secrets)
-#resource "azurerm_key_vault_access_policy" "adf_to_kv" {
-#  key_vault_id = azurerm_key_vault.kv.id
-#  tenant_id    = azurerm_data_factory.adf.identity[0].tenant_id
-#  object_id    = azurerm_data_factory.adf.identity[0].principal_id
-
- # secret_permissions = [
-#    "Get",
-#    "List",
-#    "Set",
-#    "Delete"
- # ]
-
-#  depends_on = [
- #   azurerm_key_vault.kv,
- #   azurerm_data_factory.adf
- # ]
- 
-# }
-
