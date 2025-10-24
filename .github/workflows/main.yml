@@ -40,11 +40,32 @@ jobs:
             -backend-config="container_name=${{ env.BACKEND_STORAGE_CONTAINER_NAME }}" \
             -backend-config="key=${{ env.BACKEND_KEY }}"
 
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan -input=false -no-color
+      - name: Import Existing Resources
+        run: |
+          # Try to import existing resource group
+          terraform import -input=false azurerm_resource_group.rg /subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/${{ env.BACKEND_RESOURCE_GROUP_NAME }} || true
+          
+          # Try to import existing storage account
+          terraform import -input=false azurerm_storage_account.adls /subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/${{ env.BACKEND_RESOURCE_GROUP_NAME }}/providers/Microsoft.Storage/storageAccounts/${{ env.BACKEND_STORAGE_ACCOUNT_NAME }} || true
+          
+          # Try to import containers
+          terraform import -input=false azurerm_storage_container.bronze "https://${{ env.BACKEND_STORAGE_ACCOUNT_NAME }}.blob.core.windows.net/bronze" || true
+          terraform import -input=false azurerm_storage_container.silver "https://${{ env.BACKEND_STORAGE_ACCOUNT_NAME }}.blob.core.windows.net/silver" || true
+          terraform import -input=false azurerm_storage_container.gold "https://${{ env.BACKEND_STORAGE_ACCOUNT_NAME }}.blob.core.windows.net/gold" || true
+          terraform import -input=false azurerm_storage_container.tfstate "https://${{ env.BACKEND_STORAGE_ACCOUNT_NAME }}.blob.core.windows.net/tfstate" || true
+          
+          # Try to import Key Vault
+          terraform import -input=false azurerm_key_vault.kv /subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/${{ env.BACKEND_RESOURCE_GROUP_NAME }}/providers/Microsoft.KeyVault/vaults/kv-sports-analytics-dev || true
+          
+          # Try to import Databricks
+          terraform import -input=false azurerm_databricks_workspace.dbw /subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/${{ env.BACKEND_RESOURCE_GROUP_NAME }}/providers/Microsoft.Databricks/workspaces/dbw-sports-analytics-dev || true
+          
+          # Try to import Data Factory
+          terraform import -input=false azurerm_data_factory.adf /subscriptions/${{ env.ARM_SUBSCRIPTION_ID }}/resourceGroups/${{ env.BACKEND_RESOURCE_GROUP_NAME }}/providers/Microsoft.DataFactory/factories/adf-sports-analytics-dev || true
         continue-on-error: true
 
+      - name: Terraform Plan
+        run: terraform plan -input=false
+
       - name: Terraform Apply
-        if: steps.plan.outcome == 'success'
         run: terraform apply -auto-approve -input=false

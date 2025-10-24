@@ -4,6 +4,10 @@
 resource "azurerm_resource_group" "rg" {
   name     = var.rg_name
   location = var.location
+
+    lifecycle {
+    ignore_changes = all
+  }
 }
 
 
@@ -14,6 +18,10 @@ resource "azurerm_storage_account" "adls" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
   is_hns_enabled           = true # This enables ADLS Gen2
+
+    lifecycle {
+    ignore_changes = all
+  }
 }
 
 # 3. Storage Containers (Bronze, Silver, Gold)
@@ -21,18 +29,31 @@ resource "azurerm_storage_container" "bronze" {
   name                  = "bronze"
   storage_account_name  = azurerm_storage_account.adls.name
   container_access_type = "private"
+
+    lifecycle {
+    ignore_changes = all
+  }
 }
 
 resource "azurerm_storage_container" "silver" {
   name                  = "silver"
   storage_account_name  = azurerm_storage_account.adls.name
   container_access_type = "private"
+
+    lifecycle {
+    ignore_changes = all
+  }
 }
 
 resource "azurerm_storage_container" "gold" {
   name                  = "gold"
   storage_account_name  = azurerm_storage_account.adls.name
   container_access_type = "private"
+
+
+    lifecycle {
+    ignore_changes = all
+  }
 }
 
 # 4. Storage Container for Terraform State (for our CI/CD backend)
@@ -40,6 +61,11 @@ resource "azurerm_storage_container" "tfstate" {
   name                  = "tfstate"
   storage_account_name  = azurerm_storage_account.adls.name
   container_access_type = "private"
+
+
+    lifecycle {
+    ignore_changes = all
+  }
 }
 
 # 5. Azure Key Vault
@@ -49,6 +75,11 @@ resource "azurerm_key_vault" "kv" {
   location            = azurerm_resource_group.rg.location
   tenant_id           = data.azurerm_client_config.current.tenant_id
   sku_name            = "standard"
+
+
+    lifecycle {
+    ignore_changes = all
+  }
 }
 
 # 6. Azure Databricks Workspace
@@ -57,6 +88,11 @@ resource "azurerm_databricks_workspace" "dbw" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   sku                 = "standard" # Use 'standard' to save costs
+
+
+    lifecycle {
+    ignore_changes = all
+  }
 }
 
 # 7. Azure Data Factory
@@ -68,6 +104,10 @@ resource "azurerm_data_factory" "adf" {
   # Create the Managed Identity
   identity {
     type = "SystemAssigned"
+  }
+
+    lifecycle {
+    ignore_changes = all
   }
 }
 
@@ -85,6 +125,10 @@ data "azurerm_client_config" "current" {}
 #  depends_on = [
 #    azurerm_data_factory.adf
 #  ]
+
+  lifecycle {
+    ignore_changes = all
+  }
 #}
 
 # 9. Grant ADF Access to Key Vault (to read/write secrets)
@@ -104,5 +148,6 @@ data "azurerm_client_config" "current" {}
  #   azurerm_key_vault.kv,
  #   azurerm_data_factory.adf
  # ]
+ 
 # }
 
