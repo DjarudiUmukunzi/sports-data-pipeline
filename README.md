@@ -24,7 +24,7 @@ The pipeline calculates key performance indicators (KPIs) like team win rates an
 
 The infrastructure is defined using Terraform and deployed automatically via GitHub Actions. The data flows through a standard Medallion Architecture.
 
-![Architecture Diagram](./images/architecture.png)
+![Architecture Diagram](./images/architecture.jpg)
 *Replace with the path to your architecture diagram image*
 
 ## 🔄 Phase 1: DataOps (CI/CD Workflow)
@@ -119,14 +119,14 @@ Comprehensive win rate analysis showing the most successful teams in European so
 
 Match frequency analysis for the top-performing teams.
 
-![Total Matches](./images/Total Matches.png)
+![Total Matches](./images/total_matches.png)
 *Total matches played by top 15 teams*
 
 #### Win/Loss/Draw Distribution
 
 Detailed breakdown of match outcomes for the top 10 teams.
 
-![Win Loss Draw](./images/Win Loss Draw.png)
+![Win Loss Draw](./images/win_Loss_draw.png)
 *Win, draw, and loss distribution for top 10 teams*
 
 ### ⚽ League Statistics
@@ -135,21 +135,21 @@ Detailed breakdown of match outcomes for the top 10 teams.
 
 Cross-league comparison of offensive productivity.
 
-![League Goals](./images/eague Goals.png)
+![League Goals](./images/league_goals.png)
 *Total goals scored across different European leagues*
 
 #### Average Goals Per Match
 
 Metric showing the most competitive and high-scoring leagues.
 
-![Average Goals](./images/Average Goals.png)
+![Average Goals](./images/average_goals.png)
 *Average goals per match by league*
 
 #### Home vs Away Performance
 
 Analysis of home field advantage across leagues.
 
-![Home vs Away](./images/Home vs Away.png)
+![Home vs Away](./images/home_vs_away.png)
 *Comparison of home and away goal averages by league*
 
 ### 🎯 Player Development Insights
@@ -158,7 +158,7 @@ Analysis of home field advantage across leagues.
 
 Scatter plot showing the relationship between current performance and future potential.
 
-![Potential vs Rating](./images/Potential vs Rating.png)
+![Potential vs Rating](./images/potential_vs_rating.png)
 *Player potential vs overall rating for top 20 players*
 
 ## 🚀 How to Deploy and Run
