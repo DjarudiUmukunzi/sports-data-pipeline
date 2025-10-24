@@ -77,32 +77,32 @@ data "azurerm_client_config" "current" {}
 # --- Role Assignments (The fixes from our last project) ---
 
 # 8. Grant ADF Access to Storage
-resource "azurerm_role_assignment" "adf_to_adls" {
-  scope                = azurerm_storage_account.adls.id
-  role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_data_factory.adf.identity[0].principal_id
+#resource "azurerm_role_assignment" "adf_to_adls" {
+#  scope                = azurerm_storage_account.adls.id
+#  role_definition_name = "Storage Blob Data Contributor"
+#  principal_id         = azurerm_data_factory.adf.identity[0].principal_id
 
-  depends_on = [
-    azurerm_data_factory.adf
-  ]
-}
+#  depends_on = [
+#    azurerm_data_factory.adf
+#  ]
+#}
 
 # 9. Grant ADF Access to Key Vault (to read/write secrets)
-resource "azurerm_key_vault_access_policy" "adf_to_kv" {
-  key_vault_id = azurerm_key_vault.kv.id
-  tenant_id    = azurerm_data_factory.adf.identity[0].tenant_id
-  object_id    = azurerm_data_factory.adf.identity[0].principal_id
+#resource "azurerm_key_vault_access_policy" "adf_to_kv" {
+#  key_vault_id = azurerm_key_vault.kv.id
+#  tenant_id    = azurerm_data_factory.adf.identity[0].tenant_id
+#  object_id    = azurerm_data_factory.adf.identity[0].principal_id
 
-  secret_permissions = [
-    "Get",
-    "List",
-    "Set",
-    "Delete"
-  ]
+ # secret_permissions = [
+#    "Get",
+#    "List",
+#    "Set",
+#    "Delete"
+ # ]
 
-  depends_on = [
-    azurerm_key_vault.kv,
-    azurerm_data_factory.adf
-  ]
-}
+#  depends_on = [
+ #   azurerm_key_vault.kv,
+ #   azurerm_data_factory.adf
+ # ]
+# }
 
