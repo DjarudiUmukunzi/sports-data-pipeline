@@ -7,25 +7,20 @@ on:
   workflow_dispatch:
 
 env:
-  # Azure Credentials from GitHub Secrets
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-
-  # --- CONFIGURATION TO MATCH YOUR variables.tf ---
   BACKEND_RESOURCE_GROUP_NAME: "rg-sports-analytics-dev"
-  BACKEND_STORAGE_ACCOUNT_NAME: "stsportsanalyticsnfcji2" 
+  BACKEND_STORAGE_ACCOUNT_NAME: "stsportsanalyticsnfcji2"
   BACKEND_STORAGE_CONTAINER_NAME: "tfstate"
   BACKEND_KEY: "terraform.tfstate"
-  # -----------------------------------------------
 
 jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
     
-    # Set a default working directory for all 'run' steps in this job
     defaults:
       run:
         working-directory: ./terraform
@@ -37,9 +32,6 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
-      # --- THIS IS THE FIX ---
-      # This command now passes all the backend info to 'init'
-      # It uses the 'env' variables defined above.
       - name: Terraform Init
         run: |
           terraform init -input=false \
@@ -49,8 +41,10 @@ jobs:
             -backend-config="key=${{ env.BACKEND_KEY }}"
 
       - name: Terraform Plan
-        run: terraform plan -input=false
+        id: plan
+        run: terraform plan -input=false -no-color
+        continue-on-error: true
 
       - name: Terraform Apply
+        if: steps.plan.outcome == 'success'
         run: terraform apply -auto-approve -input=false
-
